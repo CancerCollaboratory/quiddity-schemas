@@ -1,0 +1,78 @@
+---
+id: "exposure"
+title: "Donor Exposure (exposure)"
+required:
+- "donor_id"
+- "tobacco_smoking_history_indicator"
+- "alcohol_history"
+- "alcohol_history_intensity"
+properties:
+  donor_id:
+    description: "Unique identifier for the donor; assigned by data provider. It must\
+      \ be coded, and correspond to a donor ID listed in the donor data file."
+    type: "string"
+    pattern: "^[\\w+\\-\\_]+$"
+  exposure_type:
+    description: "Type of exposure. This field can be used if donor was exposed to\
+      \ something other than tobacco or alcohol."
+    type:
+    - "string"
+    - "null"
+  exposure_intensity:
+    description: "Extent of the exposure. Use this field to specify intensity of exposure\
+      \ submitted in 'exposure_type' field"
+    type:
+    - "integer"
+    - "null"
+  exposure_notes:
+    description: "Free text notes."
+    type:
+    - "string"
+    - "null"
+  tobacco_smoking_history_indicator:
+    description: "Donor's smoking history"
+    $ref: "#/definitions/tobacco_smoking_history_indicator"
+  tobacco_smoking_intensity:
+    description: "Smoking intensity in Pack Years: Number of pack years defined as\
+      \ the number of cigarettes smoked per day times (x) the number of years smoked\
+      \ divided (/) by 20. If patient has no tobacco smoking history (ie. tobacco_smoking_history_indicator\
+      \ is either '1' (non-smoker) or '6' (not documented), enter '-888' (not applicable)\
+      \ in this field."
+    type:
+    - "integer"
+    - "null"
+  alcohol_history:
+    description: "A response to a question that asks whether the patient has consumed\
+      \ at least 12 drinks of any alcoholic beverage in their lifetime."
+    $ref: "#/definitions/alcohol_history"
+  alcohol_history_intensity:
+    description: "Alcohol exposure intensity. If patient does not have alcohol history\
+      \ (ie. alcohol_history field is either '2'(no) or '3'(do not know), enter '-888'\
+      \ (not applicable) in this field."
+    $ref: "#/definitions/alcohol_history_intensity"
+  donor:
+    type: "object"
+    properties:
+      donor_id:
+        type: "string"
+primaryKey:
+- "donor_id"
+scripts:
+- value: "if (donor_id ~= '(D|d)(O|o).*') { return false } return true"
+  description: "donor_id cannot begin with 'DO*'. This prefix is reserved for ICGC\
+    \ IDs"
+- value: "if (alcohol_history == '1' || alcohol_history == 'yes') { alcohol_history_intensity\
+    \ ~= '2|3|4|5|6' } else if (alcohol_history == '2' || alcohol_history == 'no')\
+    \ { alcohol_history_intensity == '1' } else if (alcohol_history == '3') {  alcohol_history_intensity\
+    \ == '6' } else { return false }"
+  description: "This field is required if alcohol_history was specified as '1' (yes).\
+    \ If patient has no alcohol history (non-drinker), indicate value '1' (none) for\
+    \ this field. If alcohol history has not been documented, indicate '6' for this\
+    \ field."
+parents:
+- type: "donor"
+  name: "donor"
+  parentKey:
+  - "donor_id"
+  property:
+  - "donor_id"

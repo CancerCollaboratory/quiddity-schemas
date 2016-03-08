@@ -1,0 +1,68 @@
+---
+id: "biomarker"
+title: "Donor Biomarkers (biomarker)"
+required:
+- "donor_id"
+- "specimen_id"
+- "biomarker_name"
+- "biomarker_threshold"
+- "biomarker_positive"
+properties:
+  donor_id:
+    description: "Unique identifier for the donor; assigned by data provider. It must\
+      \ be coded, and correspond to a donor ID listed in the donor data file."
+    type: "string"
+    pattern: "^[\\w+\\-\\_]+$"
+  specimen_id:
+    description: "Unique identifier for a collected specimen assigned by data provider."
+    type: "string"
+    pattern: "^([\\w+\\-\\_]+)$"
+  biomarker_name:
+    description: "Biomarker name"
+    type: "string"
+  biomarker_threshold:
+    description: "Threshold value for the biomarker for calling a result positive.\
+      \ Please include units."
+    type: "string"
+  biomarker_positive:
+    description: "Whether test is positive for named biomarker"
+    $ref: "#/definitions/biomarker_positive"
+  donor:
+    type: "object"
+    properties:
+      donor_id:
+        type: "string"
+  specimen:
+    type: "object"
+    properties:
+      donor_id:
+        type: "string"
+      specimen_id:
+        type: "string"
+primaryKey:
+- "donor_id"
+- "specimen_id"
+- "biomarker_name"
+scripts:
+- value: "if (donor_id ~= '(D|d)(O|o).*') { return false } return true"
+  description: "donor_id cannot begin with 'DO*'. This prefix is reserved for ICGC\
+    \ IDs"
+- value: "if (specimen_id ~= '(S|s)(P|p).*') { return false } return true"
+  description: "specimen_id cannot begin with 'SP*'. This prefix is reserved for ICGC\
+    \ IDs"
+parents:
+- type: "donor"
+  name: "donor"
+  parentKey:
+  - "donor_id"
+  property:
+  - "donor_id"
+- type: "specimen"
+  name: "specimen"
+  parentKey:
+  - "donor_id"
+  - "specimen_id"
+  property:
+  - "donor_id"
+  - "specimen_id"
+  required: false

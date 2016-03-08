@@ -1,0 +1,116 @@
+---
+id: "therapy"
+title: "Donor Postresection Therapy (therapy)"
+required:
+- "donor_id"
+- "first_therapy_type"
+- "first_therapy_therapeutic_intent"
+- "second_therapy_type"
+- "second_therapy_therapeutic_intent"
+properties:
+  donor_id:
+    description: "Unique identifier for the donor; assigned by data provider. It must\
+      \ be coded, and correspond to a donor ID listed in the donor data file."
+    type: "string"
+    pattern: "^[\\w+\\-\\_]+$"
+  first_therapy_start_interval:
+    description: "Interval between primary diagnosis and initiation of the first postresection\
+      \ therapy, in days"
+    type:
+    - "integer"
+    - "null"
+  first_therapy_duration:
+    description: "Duration of first postresection therapy, in days"
+    type:
+    - "integer"
+    - "null"
+  first_therapy_type:
+    description: "Type of first postresection therapy"
+    $ref: "#/definitions/therapy_type"
+  first_therapy_response:
+    description: "What was the clinical effect of the first postresection therapy?"
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/therapy_response"
+  first_therapy_therapeutic_intent:
+    description: "The therapeutic intent of the first post resection therapy"
+    $ref: "#/definitions/therapeutic_intent"
+  second_therapy_start_interval:
+    description: "Interval between primary diagnosis and initiation of the second\
+      \ postresection therapy, in days"
+    type:
+    - "integer"
+    - "null"
+  second_therapy_duration:
+    description: "Duration of second postresection therapy, in days"
+    type:
+    - "integer"
+    - "null"
+  second_therapy_type:
+    description: "Type of second postresection therapy"
+    $ref: "#/definitions/therapy_type"
+  second_therapy_response:
+    description: "What was the clinical effect of the second postresection therapy?"
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/therapy_response"
+  second_therapy_therapeutic_intent:
+    description: "The therapeutic intent of the second postresection therapy"
+    $ref: "#/definitions/therapeutic_intent"
+  other_therapy:
+    description: "Other postresection therapy"
+    type:
+    - "string"
+    - "null"
+  other_therapy_response:
+    description: "What is the clinical effect of the postresection therapy"
+    type:
+    - "string"
+    - "null"
+  therapy_notes:
+    description: "Further description of therapy, such as dosing schedule."
+    type:
+    - "string"
+    - "null"
+  donor:
+    type: "object"
+    properties:
+      donor_id:
+        type: "string"
+primaryKey:
+- "donor_id"
+scripts:
+- value: "if (donor_id ~= '(D|d)(O|o).*') { return false } return true"
+  description: "donor_id cannot begin with 'DO*'. This prefix is reserved for ICGC\
+    \ IDs"
+- value: "if (first_therapy_type ~= '2|3|4|5|6|7|9|10|11') { first_therapy_response\
+    \ != null } else { return true }"
+  description: "Use this field to describe the clinical effect of the type of therapy\
+    \ described in 'first_therapy_type'"
+- value: "if (first_therapy_type ~= '2|3|4|5|6|7') { first_therapy_therapeutic_intent\
+    \ != 1 } else { return true }"
+  description: "Use this field to describe the therapeutic intent of the type of therapy\
+    \ described in 'first_therapy_type'"
+- value: "if (second_therapy_type ~= '2|3|4|5|6|7|9|10|11') { second_therapy_response\
+    \ != null } else { return true }"
+  description: "Use this field to describe the clinical effect of the type of therapy\
+    \ described in 'second_therapy_type'"
+- value: "if (second_therapy_type ~= '2|3|4|5|6|7|9|10|11') { second_therapy_therapeutic_intent\
+    \ != 1 } else { return true }"
+  description: "Use this field to describe the therapeutic intent of the type of therapy\
+    \ described in 'second_therapy_type'"
+- value: "if (first_therapy_type == 8 || second_therapy_type == 8) { other_therapy\
+    \ != null } else { return true }"
+  description: "Use this field to describe other therapies if either 'first_therapy_type'\
+    \ or 'second_therapy_type' are specified as 'other therapy'"
+- value: "if (other_therapy != null) { other_therapy_response != null } else { return\
+    \ true }"
+  description: "Use this field to describe the response to the other therapy described\
+    \ in 'other_therapy'"
+parents:
+- type: "donor"
+  name: "donor"
+  parentKey:
+  - "donor_id"
+  property:
+  - "donor_id"

@@ -1,0 +1,85 @@
+---
+id: "family"
+title: "Donor Family (family)"
+required:
+- "donor_id"
+- "donor_has_relative_with_cancer_history"
+properties:
+  donor_id:
+    description: "Unique identifier for the donor; assigned by data provider. It must\
+      \ be coded, and correspond to a donor ID listed in the donor data file."
+    type: "string"
+    pattern: "^[\\w+\\-\\_]+$"
+  donor_has_relative_with_cancer_history:
+    description: "Does patient have any relatives with a history of cancer?"
+    $ref: "#/definitions/donor_has_relative_with_cancer_history"
+  relationship_type:
+    description: "Relationship to the donor"
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/relationship_type"
+  relationship_type_other:
+    description: "If 'other' answered in relationship_type field, specify the relationship\
+      \ type here"
+    type:
+    - "string"
+    - "null"
+  relationship_sex:
+    description: "Biological sex of related individual"
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/relationship_sex"
+  relationship_age:
+    description: "Age of relative at primary diagnosis (in years)"
+    type:
+    - "integer"
+    - "null"
+  relationship_disease_icd10:
+    description: "ICD-10 code of disease affecting family member specified in the\
+      \ 'relationship_type' field"
+    type:
+    - "string"
+    - "null"
+  relationship_disease:
+    description: "Disease name"
+    type:
+    - "string"
+    - "null"
+  donor:
+    type: "object"
+    properties:
+      donor_id:
+        type: "string"
+primaryKey:
+- "donor_id"
+- "donor_has_relative_with_cancer_history"
+- "relationship_type"
+- "relationship_type_other"
+- "relationship_sex"
+- "relationship_age"
+- "relationship_disease_icd10"
+- "relationship_disease"
+scripts:
+- value: "if (donor_id ~= '(D|d)(O|o).*') { return false } return true"
+  description: "donor_id cannot begin with 'DO*'. This prefix is reserved for ICGC\
+    \ IDs"
+- value: "if (donor_has_relative_with_cancer_history == '1' || donor_has_relative_with_cancer_history\
+    \ == 'yes') { relationship_type != null } else { return true; }"
+  description: "If there is a history of cancer in a relative, this field must be\
+    \ specified."
+- value: "if (relationship_type == '6' || relationship_type == 'other') { relationship_type_other\
+    \ !=  null } else { return true; }"
+  description: "If 'other' answered in relationship_type field, specifiy the relationship\
+    \ type here"
+- value: "if (relationship_type ~= '1|2|3|4|5|6') { relationship_sex != null } else\
+    \ { return true }"
+  description: "Indicate sex of family member specified in the the 'relationship_type'\
+    \ field. If no family history of cancer, then -888 (not applicable) can be used\
+    \ in this field."
+parents:
+- type: "donor"
+  name: "donor"
+  parentKey:
+  - "donor_id"
+  property:
+  - "donor_id"

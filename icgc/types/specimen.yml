@@ -1,0 +1,187 @@
+---
+id: "specimen"
+title: "Specimen Data File (specimen)"
+required:
+- "donor_id"
+- "specimen_id"
+- "specimen_type"
+properties:
+  donor_id:
+    description: "Unique identifier for the donor; assigned by data provider. It must\
+      \ be coded, and correspond to a donor ID listed in the donor data file."
+    type: "string"
+    pattern: "^[\\w+\\-\\_]+$"
+  specimen_id:
+    description: "Unique identifier for a collected specimen assigned by data provider."
+    type: "string"
+    pattern: "^([\\w+\\-\\_]+)$"
+  specimen_type:
+    description: "Controlled vocabulary description of specimen type."
+    $ref: "#/definitions/specimen_type"
+  specimen_type_other:
+    description: "Free text description of site of specimen if 108 ('Normal - other')\
+      \ or 113 ('Primary tumour - other') or 117 ('Recurrent tumour - other') was\
+      \ specified in specimen_type field."
+    type:
+    - "string"
+    - "null"
+  specimen_interval:
+    description: "Interval between primary diagnosis and specimen acquisition, in\
+      \ days"
+    type:
+    - "integer"
+    - "null"
+  specimen_donor_treatment_type:
+    description: "Type of treatment the donor received prior to specimen acquisition."
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/specimen_donor_treatment_type"
+  specimen_donor_treatment_type_other:
+    description: "If 'other' therapy indicated in previous column, describe it here.\
+      \ eg: molecular"
+    type:
+    - "string"
+    - "null"
+  specimen_processing:
+    description: "Description of technique used to process specimen"
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/specimen_processing"
+  specimen_processing_other:
+    description: "If 'other' specified for specimen_processing, may indicate technique\
+      \ here."
+    type:
+    - "string"
+    - "null"
+  specimen_storage:
+    description: "Description of how specimen was stored. For specimens that were\
+      \ extracted freshly or immediately cultured, answer (1) 'NA'."
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/specimen_storage"
+  specimen_storage_other:
+    description: "If 'other' specified for specimen_storage, may indicate technique\
+      \ here."
+    type:
+    - "string"
+    - "null"
+  tumour_confirmed:
+    description: "Whether tumour was confirmed in the specimen as malignant by histological\
+      \ examination."
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/yes_no"
+  specimen_biobank:
+    description: "If the specimen was obtained from a biobank, provide the biobank\
+      \ name here"
+    type:
+    - "string"
+    - "null"
+  specimen_biobank_id:
+    description: "If the specimen was obtained from a biobank, provide the biobank\
+      \ accession number here."
+    type:
+    - "string"
+    - "null"
+  specimen_available:
+    description: "Whether additional tissue is available for followup studies."
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/yes_no"
+  tumour_histological_type:
+    description: "'WHO International Histological Classification of Tumours' code.\
+      \ See http://w2.iarc.fr/en/publications/pdfs-online/pat-gen/bb2/BB2.pdf for\
+      \ details."
+    type:
+    - "string"
+    - "null"
+  tumour_grading_system:
+    description: "Name of tumour grading system"
+    type:
+    - "string"
+    - "null"
+  tumour_grade:
+    description: "Tumour grade using indicated grading system"
+    type:
+    - "string"
+    - "null"
+  tumour_grade_supplemental:
+    description: "Optional additional grading provided as a comma-delimited list of\
+      \ 'grading system:grade'"
+    type:
+    - "string"
+    - "null"
+  tumour_stage_system:
+    description: "Name of tumour staging system used "
+    type:
+    - "string"
+    - "null"
+  tumour_stage:
+    description: "Pathological tumour stage value using indicated staging system"
+    type:
+    - "string"
+    - "null"
+  tumour_stage_supplemental:
+    description: "Optional additional staging provided as a comma-delimited list of\
+      \ 'staging system:stage'"
+    type:
+    - "string"
+    - "null"
+  digital_image_of_stained_section:
+    description: "Linkout(s) to digital image of a stained section, demonstrating\
+      \ a representative section of tumour"
+    type:
+    - "string"
+    - "null"
+  percentage_cellularity:
+    description: "The ratio of tumour nuclei to total number of nuclei in a given\
+      \ specimen expressed as a percentage. Can populate information in either this\
+      \ field or level_of_cellularity"
+    type:
+    - "integer"
+    - "null"
+  level_of_cellularity:
+    description: "The proportion of tumour nuclei to total number of nuclei in a given\
+      \ specimen. If exact percentage cellularity cannot be determined submitter has\
+      \ option to use this field to specify a level that defines a range of percentage."
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/cellularity"
+  specimen_notes:
+    description: "Free text notes allowed"
+    type:
+    - "string"
+    - "null"
+  donor:
+    type: "object"
+    properties:
+      donor_id:
+        type: "string"
+primaryKey:
+- "specimen_id"
+scripts:
+- value: "if (donor_id ~= '(D|d)(O|o).*') { return false } return true"
+  description: "donor_id cannot begin with 'DO*'. This prefix is reserved for ICGC\
+    \ IDs"
+- value: "if (specimen_id ~= '(S|s)(P|p).*') { return false } return true"
+  description: "specimen_id cannot begin with 'SP*'. This prefix is reserved for ICGC\
+    \ IDs"
+- value: "if (specimen_type == '108' || specimen_type == 'Normal - other' || specimen_type\
+    \ == '113' || specimen_type == 'Primary tumour - other' || specimen_type == '117'\
+    \ || specimen_type == 'Recurrent tumour - other') { (specimen_type_other != null)\
+    \ } else { return true; }"
+  description: "If specimen_type is specified as either Normal - other, Primary tumour\
+    \ - other or Recurrent tumour - other, specimen_type_other needs to be filled\
+    \ in"
+- value: "if (specimen_donor_treatment_type == '8' || specimen_donor_treatment_type\
+    \ == 'other therapy') { specimen_donor_treatment_type_other != null } else { return\
+    \ true; }"
+  description: "If 'other therapy' specified in specimen_donor_treatment_type', specify\
+    \ the other therapy here"
+parents:
+- type: "donor"
+  name: "donor"
+  parentKey:
+  - "donor_id"
+  property:
+  - "donor_id"

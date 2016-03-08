@@ -1,0 +1,22 @@
+---
+id: "file"
+title: "File"
+required:
+- "file_id"
+- "bundle_id"
+properties:
+  file_id:
+    type: "string"
+  bundle_id:
+    type: "string"
+    
+parents:
+- type: "bundle"
+  name: "bundle"
+  parentKey:
+  - "bundle_id"
+  property:
+  - "bundle_id"
+  
+primaryKey:
+- "file_id"

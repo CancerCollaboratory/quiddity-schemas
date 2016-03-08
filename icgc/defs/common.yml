@@ -1,0 +1,222 @@
+---
+yes_no:
+  type: "string"
+  enum:
+  - "yes"
+  - "no"
+biomarker_positive:
+  type: "string"
+  enum:
+  - "ambiguous"
+  - "absent"
+  - "present"
+donor_sex:
+  type: "string"
+  enum:
+  - "male"
+  - "female"
+donor_vital_status:
+  type: "string"
+  enum:
+  - "alive"
+  - "deceased"
+specimen_processing:
+  type: "string"
+  enum:
+  - "cryopreservation in liquid nitrogen (dead tissue)"
+  - "cryopreservation in dry ice (dead tissue)"
+  - "cryopreservation of live cells in liquid nitrogen"
+  - "cryopreservation, other"
+  - "formalin fixed, unbuffered"
+  - "formalin fixed, buffered"
+  - "formalin fixed & paraffin embedded"
+  - "fresh"
+  - "other technique"
+specimen_storage:
+  type: "string"
+  enum:
+  - "frozen, liquid nitrogen"
+  - "frozen, -70 freezer"
+  - "frozen, vapor phase"
+  - "RNA later frozen"
+  - "paraffin block"
+  - "cut slide"
+  - "other"
+specimen_type:
+  type: "string"
+  enum:
+  - "Normal - solid tissue"
+  - "Normal - blood derived"
+  - "Normal - bone marrow"
+  - "Normal - tissue adjacent to primary"
+  - "Normal - buccal cell"
+  - "Normal - EBV immortalized"
+  - "Normal - lymph node"
+  - "Normal - other"
+  - "Primary tumour - solid tissue"
+  - "Primary tumour - blood derived (peripheral blood)"
+  - "Primary tumour - blood derived (bone marrow)"
+  - "Primary tumour - additional new primary"
+  - "Primary tumour - other"
+  - "Recurrent tumour - solid tissue"
+  - "Recurrent tumour - blood derived (peripheral blood)"
+  - "Recurrent tumour - blood derived (bone marrow)"
+  - "Recurrent tumour - other"
+  - "Metastatic tumour - NOS"
+  - "Metastatic tumour - lymph node"
+  - "Metastatic tumour - metastatsis local to lymph node"
+  - "Metastatic tumour - metastatsis to distant location"
+  - "Metastatic tumour - additional metastatic"
+  - "Xenograft - derived from primary tumour"
+  - "Xenograft - derived from tumour cell line"
+  - "Cell line - derived from tumour"
+  - "Primary tumour - lymph node"
+  - "Metastatic tumour - other"
+  - "Cell line - derived from xenograft tumour"
+procedure_type:
+  type: "string"
+  enum:
+  - "surgical resection of primary"
+  - "surgical resection of local recurrence"
+  - "surgical resection of distant recurrence (metastasis)"
+  - "lymph node dissection performed at time of resection of primary."
+  - "biopsy of primary"
+  - "biopsy of local recurrence"
+  - "biopsy of distant recurrence."
+  - "other"
+resection_status:
+  type: "string"
+  enum:
+  - "R0 - no apparent residual disease."
+  - "R1 - microscopic residual disease."
+  - "R2 - gross residual disease."
+cellularity:
+  type: "string"
+  enum:
+  - "1-20%"
+  - "21-40%"
+  - "41-60%"
+  - "61-80%"
+  - ">81%"
+study:
+  title: "A list indicating which study a sample is involved in"
+  type: "string"
+  enum:
+  - "PCAWG"
+alcohol_history_intensity:
+  type: "string"
+  enum:
+  - "None"
+  - "Social Drinker (> once a month, < once a week)"
+  - "Weekly Drinker (>=1x a week)"
+  - "Daily Drinker"
+  - "Occassional Drinker (< once a month)"
+  - "Not Documented"
+alcohol_history:
+  type: "string"
+  enum:
+  - "yes"
+  - "no"
+  - "Don't know/Not sure"
+tobacco_smoking_history_indicator:
+  type: "string"
+  enum:
+  - "Lifelong non-smoker (<100 cigarettes smoked in lifetime)"
+  - "Current smoker (includes daily smokers non-daily/occasional smokers)"
+  - "Current reformed smoker for > 15 years"
+  - "Current reformed smoker for <= 15 years"
+  - "Current reformed smoker, duration not specified"
+  - "Smoking history not documented"
+cancer_history_first_degree_relative:
+  type: "string"
+  enum:
+  - "yes"
+  - "no"
+  - "unknown"
+therapeutic_intent:
+  type: "string"
+  enum:
+  - "not applicable"
+  - "adjuvant"
+  - "curative"
+  - "palliative"
+prior_malignancy:
+  type: "string"
+  enum:
+  - "yes"
+  - "no"
+  - "unknown"
+donor_has_relative_with_cancer_history:
+  type: "string"
+  enum:
+  - "yes"
+  - "no"
+  - "unknown"
+relationship_sex:
+  type: "string"
+  enum:
+  - "male"
+  - "female"
+  - "unknown"
+therapy_type:
+  type: "string"
+  enum:
+  - "no treatment"
+  - "chemotherapy"
+  - "radiation therapy"
+  - "combined chemo+radiation therapy"
+  - "immunotherapy"
+  - "combined chemo+immunotherapy"
+  - "surgery"
+  - "other therapy"
+  - "bone marrow transplant"
+  - "stem cell transplant"
+  - "monoclonal antibodies (for liquid tumours)"
+specimen_donor_treatment_type:
+  type: "string"
+  enum:
+  - "no treatment"
+  - "chemotherapy"
+  - "radiation therapy"
+  - "combined chemo+radiation therapy"
+  - "immunotherapy"
+  - "combined chemo+immunotherapy"
+  - "surgery"
+  - "other therapy"
+  - "bone marrow transplant"
+  - "stem cell transplant"
+  - "monoclonal antibodies (for liquid tumours)"
+donor_relapse_type:
+  type: "string"
+  enum:
+  - "local recurrence"
+  - "distant recurrence/metastasis"
+  - "progression (liquid tumours)"
+  - "local recurrence and distant metastasis"
+therapy_response:
+  type: "string"
+  enum:
+  - "complete response"
+  - "partial response"
+  - "disease progression"
+  - "stable disease"
+  - "unknown"
+disease_status_last_followup:
+  type: "string"
+  enum:
+  - "complete remission"
+  - "partial remission"
+  - "progression"
+  - "relapse"
+  - "stable"
+  - "no evidence of disease"
+relationship_type:
+  type: "string"
+  enum:
+  - "sibling"
+  - "parent"
+  - "grandparent"
+  - "uncle/aunt"
+  - "cousin"
+  - "other"
+  - "unknown"

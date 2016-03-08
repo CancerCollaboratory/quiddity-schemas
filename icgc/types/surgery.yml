@@ -1,0 +1,79 @@
+---
+id: "surgery"
+title: "Donor Surgery (surgery)"
+required:
+- "donor_id"
+- "procedure_type"
+- "procedure_site"
+properties:
+  donor_id:
+    description: "Unique identifier for the donor; assigned by data provider. It must\
+      \ be coded, and correspond to a donor ID listed in the donor data file."
+    type: "string"
+    pattern: "^[\\w+\\-\\_]+$"
+  procedure_interval:
+    description: "Interval between primary diagnosis and procedure, in days"
+    type:
+    - "integer"
+    - "null"
+  procedure_type:
+    description: "Controlled vocabulary description of the procedure type. Vocabulary\
+      \ can be extended by disease-specific projects. Prefix extensions with 3-digit\
+      \ center code, e.g. 008.1 Beijing Cancer Hospital, fine needle aspiration of\
+      \ primary"
+    $ref: "#/definitions/procedure_type"
+  procedure_site:
+    description: "Anatomical site of the procedure. This must use a standard controlled\
+      \ vocabulary which should be reported in advance to the DCC."
+    type: "string"
+  resection_status:
+    description: "For resection procedures, an indication of the extent of residual\
+      \ disease."
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/resection_status"
+  specimen_id:
+    description: "ID of ICGC specimen resulting from procedure. If present, must match\
+      \ specimen_id in specimen data file."
+    type:
+    - "string"
+    - "null"
+    pattern: "^([\\w+\\-\\_]+)$"
+  donor:
+    type: "object"
+    properties:
+      donor_id:
+        type: "string"
+  specimen:
+    type: "object"
+    properties:
+      donor_id:
+        type: "string"
+      specimen_id:
+        type: "string"
+primaryKey:
+- "donor_id"
+- "specimen_id"
+scripts:
+- value: "if (donor_id ~= '(D|d)(O|o).*') { return false } return true"
+  description: "donor_id cannot begin with 'DO*'. This prefix is reserved for ICGC\
+    \ IDs"
+- value: "if (specimen_id ~= '(S|s)(P|p).*') { return false } return true"
+  description: "specimen_id cannot begin with 'SP*'. This prefix is reserved for ICGC\
+    \ IDs"
+parents:
+- type: "donor"
+  name: "donor"
+  parentKey:
+  - "donor_id"
+  property:
+  - "donor_id"
+- type: "specimen"
+  name: "specimen"
+  parentKey:
+  - "donor_id"
+  - "specimen_id"
+  property:
+  - "donor_id"
+  - "specimen_id"
+  required: false

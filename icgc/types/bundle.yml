@@ -1,0 +1,20 @@
+id: bundle
+title: Bundle
+required:
+- bundle_id
+properties:
+  bundle_id:
+    type: string
+  reference_genome:
+    type: object
+    properties:
+      sid:
+        type: string
+      build:
+        type: string
+      file:
+        type: array
+        items:
+          type: string
+primaryKey:
+- bundle_id

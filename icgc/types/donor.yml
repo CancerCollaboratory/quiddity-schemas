@@ -1,0 +1,184 @@
+---
+id: "donor"
+title: "Donor Data File (donor)"
+required:
+- "donor_id"
+properties:
+  donor_id:
+    description: "Unique identifier for the donor; assigned by data provider. It must\
+      \ be coded, and correspond to a donor ID listed in the donor data file."
+    type: "string"
+    pattern: "^[\\w+\\-\\_]+$"
+  donor_sex:
+    description: "Donor biological sex. 'Other' has been removed from the controlled\
+      \ vocabulary due to identifiability concerns."
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/donor_sex"
+  donor_region_of_residence:
+    description: "Country, and optionally state or province code, but not city."
+    type:
+    - "string"
+    - "null"
+  donor_vital_status:
+    description: "Donor's last known vital status"
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/donor_vital_status"
+  disease_status_last_followup:
+    description: "Donor's last known disease status."
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/disease_status_last_followup"
+  donor_relapse_type:
+    description: "Type of relapse or progression (for liquid tumours), if applicable"
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/donor_relapse_type"
+  donor_age_at_diagnosis:
+    description: "Age at primary diagnosis in years."
+    type:
+    - "integer"
+    - "null"
+  donor_age_at_enrollment:
+    description: "Age (in years) at which first specimen was collected."
+    type:
+    - "integer"
+    - "null"
+  donor_age_at_last_followup:
+    description: "Age (in years) at last followup"
+    type:
+    - "integer"
+    - "null"
+  donor_relapse_interval:
+    description: "If the donor was clinically disease free following primary therapy,\
+      \ and then relapse or progression (for liquid tumours) occurred afterwards,\
+      \ then donor_relapse_interval is the length of disease free interval, in days."
+    type:
+    - "integer"
+    - "null"
+  donor_diagnosis_icd10:
+    description: "ICD-10 diagnostic code"
+    type:
+    - "string"
+    - "null"
+  donor_tumour_staging_system_at_diagnosis:
+    description: "Clinical staging system used at time of diagnosis, if determined.\
+      \ Note that this is supplementary to specimen's pathological staging."
+    type:
+    - "string"
+    - "null"
+  donor_tumour_stage_at_diagnosis:
+    description: "Stage at diagnosis using indicated staging system. Note that this\
+      \ is supplementary to specimen's pathological staging. "
+    type:
+    - "string"
+    - "null"
+  donor_tumour_stage_at_diagnosis_supplemental:
+    description: "Optional additional staging provided as a comma-delimited list of\
+      \ 'staging system:stage'"
+    type:
+    - "string"
+    - "null"
+  donor_survival_time:
+    description: "How long has the donor survived since primary diagnosis, in days.\
+      \ If source data was collected in months, use a multiplier value of '30.44'\
+      \ to convert values to days when preparing your submission."
+    type:
+    - "integer"
+    - "null"
+  donor_interval_of_last_followup:
+    description: "Interval from the primary diagnosis date to the last followup date.\
+      \ ICGC requests that patients be followed up every 6 months while alive."
+    type:
+    - "integer"
+    - "null"
+  donor_notes:
+    description: "Free text notes concerning donor"
+    type:
+    - "string"
+    - "null"
+  prior_malignancy:
+    description: "Prior malignancy affecting patient."
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/prior_malignancy"
+  cancer_type_prior_malignancy:
+    description: "ICD-10 diagnostic code for type of cancer in a prior malignancy."
+    type:
+    - "string"
+    - "null"
+  cancer_history_first_degree_relative:
+    description: "Does patient have a first degree relative that has a history of\
+      \ cancer? If yes, please provide clincial informration about relative's cancer\
+      \ history in Donor Family file"
+    oneOf:
+    - type: "null"
+    - $ref: "#/definitions/cancer_history_first_degree_relative"
+  donor_primary_treatment_interval:
+    description: "Interval between primary diagnosis and primary treatment, in days"
+    type:
+    - "integer"
+    - "null"
+primaryKey:
+- "donor_id"
+scripts:
+- value: "if (donor_id ~= '(D|d)(O|o).*') { return false } return true"
+  description: "donor_id cannot begin with 'DO*'. This prefix is reserved for ICGC\
+    \ IDs"
+- value: "if (donor_age_at_diagnosis > 90) { return false } if (donor_age_at_diagnosis\
+    \ > donor_age_at_enrollment) { return false } return true"
+  description: "The donor's age at diagnosis must be expressed in years. If donor\
+    \ is older than 90 years, submit value of 90. The donor's age at diagnosis should\
+    \ be less than or equal to the donor's age at enrollment"
+- value: "if (donor_age_at_enrollment > 90) { return false } if (donor_age_at_enrollment\
+    \ > donor_age_at_last_followup) { return false} return true"
+  description: "The donor's age at enrollment must be expressed in years. If donor\
+    \ is older than 90 years old, submit value of 90. The donor age at enrollment\
+    \ should be greater than or equal to the donor's age at last followup"
+- value: "projectList = []; alive = (donor_vital_status == '1'); deceased = (donor_vital_status\
+    \ == '2'); progression = (disease_status_last_followup == '3'); relapse = (disease_status_last_followup\
+    \ == '4'); if (!(projectList contains project)) { if (progression || relapse )\
+    \ { if (donor_relapse_interval == null || donor_interval_of_last_followup == null)\
+    \ { return false } if (alive && !(donor_relapse_interval <= donor_interval_of_last_followup))\
+    \ { return false } if (deceased && !(donor_relapse_interval <= donor_survival_time))\
+    \ { return false } } } return true"
+  description: "If donor_vital_status is alive and disease_status_last_followup is\
+    \ relapse or progression, the donor_relapse_interval should be less than or equal\
+    \ to the donor interval of last followup. If the donor is deceased and disease_status_last_followup\
+    \ is relapse or progression, the donor_relapse_interval should be less than or\
+    \ equal to the donor_survival_time. Please see <a href='https://docs.icgc.org/donor-clinical-data-guidelines'>Donor\
+    \ clinical data documentation </a> for more details"
+- value: "projectList=[]; alive = (donor_vital_status == '1'); deceased = (donor_vital_status\
+    \ == '2'); if (!(projectList contains project)) { if (deceased) { if (donor_survival_time\
+    \ == null) { return false } } if (alive) { if (donor_survival_time != null &&\
+    \ donor_interval_of_last_followup != null) { if (!(donor_survival_time == donor_interval_of_last_followup))\
+    \ { return false } } } return true } return true"
+  description: "Donor survival time must be submitted if donor_vital_status is deceased.\
+    \ If donor is alive, donor_survival_time should be equal to the donor_interval_of_last_followup.\
+    \ Please see <a href='https://docs.icgc.org/donor-clinical-data-guidelines'>Donor\
+    \ clinical data documentation </a> for more details"
+- value: "projectList=[]; progression = (disease_status_last_followup == '3'); relapse\
+    \ = (disease_status_last_followup == '4'); if (!(projectList contains project))\
+    \ { if ( (progression || relapse) && (donor_interval_of_last_followup == null)\
+    \ ) { return false } } return true"
+  description: "If donor's disease_status_last_followup is progression or relapse,\
+    \ donor_interval_of_last_followup is required. Please see <a href='https://docs.icgc.org/donor-clinical-data-guidelines'>Donor\
+    \ clinical data documentation </a> for more details"
+- value: "projectList=[]; alive = (donor_vital_status == '1'); deceased = (donor_vital_status\
+    \ == '2'); progression = (disease_status_last_followup == '3'); relapse = (disease_status_last_followup\
+    \ == '4'); if (!(projectList contains project)) { if (donor_primary_treatment_interval\
+    \ != null) { if (donor_survival_time != null && !(donor_primary_treatment_interval\
+    \ <= donor_survival_time)) { return false } if ( (progression || relapse) && donor_relapse_interval\
+    \ != null ) { if (alive && !(donor_primary_treatment_interval + donor_relapse_interval\
+    \ <= donor_interval_of_last_followup)) { return false } if (deceased && !(donor_primary_treatment_interval\
+    \ + donor_relapse_interval <= donor_survival_time)) { return false } } } } return\
+    \ true"
+  description: "The donor's primary treatment interval must be less than or equal\
+    \ to the donor's survival time. If donor's disease_status_last_followup is progression\
+    \ or relapse and the donor is alive, the combination of the donor's primary treatment\
+    \ interval and relapse interval should be less than or equal to the donor's interval\
+    \ of last followup. However, if the donor is deceased and had progressed or relapsed,\
+    \ the combination of the donor's primary treatment interval and relapse interval\
+    \ should be less than or equal to the donor's survival time. Please see <a href='https://docs.icgc.org/donor-clinical-data-guidelines'>Donor\
+    \ clinical data documentation </a> for more details"
