@@ -22,7 +22,7 @@ properties:
     description: "Extent of the exposure. Use this field to specify intensity of exposure\
       \ submitted in 'exposure_type' field"
     type:
-    - "integer"
+    - "string"
     - "null"
   exposure_notes:
     description: "Free text notes."
@@ -61,10 +61,14 @@ scripts:
 - value: "if (donor_id ~= '(D|d)(O|o).*') { return false } return true"
   description: "donor_id cannot begin with 'DO*'. This prefix is reserved for ICGC\
     \ IDs"
-- value: "if (alcohol_history == '1' || alcohol_history == 'yes') { alcohol_history_intensity\
-    \ ~= '2|3|4|5|6' } else if (alcohol_history == '2' || alcohol_history == 'no')\
-    \ { alcohol_history_intensity == '1' } else if (alcohol_history == '3') {  alcohol_history_intensity\
-    \ == '6' } else { return false }"
+- value: "alcohol_history_intensities = ['2', 'Social Drinker (> once a month, < once\
+    \ a week)', '3', 'Weekly Drinker (>=1x a week)', '4', 'Daily Drinker', '5', 'Occassional\
+    \ Drinker (< once a month)', '6', 'Not Documented']; if (alcohol_history == '1'\
+    \ || alcohol_history == 'yes') { alcohol_history_intensities contains alcohol_history_intensity\
+    \ } else if (alcohol_history == '2' || alcohol_history == 'no') { alcohol_history_intensity\
+    \ == '1' || alcohol_history_intensity == 'None'} else if (alcohol_history == '3'\
+    \ || alcohol_history == 'Don't know/Not sure') { alcohol_history_intensity ==\
+    \ '6' || alcohol_history_intensity == 'Not Documented' } else { return false }"
   description: "This field is required if alcohol_history was specified as '1' (yes).\
     \ If patient has no alcohol history (non-drinker), indicate value '1' (none) for\
     \ this field. If alcohol history has not been documented, indicate '6' for this\

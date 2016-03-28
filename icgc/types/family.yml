@@ -71,8 +71,9 @@ scripts:
     \ !=  null } else { return true; }"
   description: "If 'other' answered in relationship_type field, specifiy the relationship\
     \ type here"
-- value: "if (relationship_type ~= '1|2|3|4|5|6') { relationship_sex != null } else\
-    \ { return true }"
+- value: "relationship_types = ['1', 'sibling', '2', 'parent', '3', 'grandparent',\
+    \ '4', 'uncle/aunt', '5', 'cousin', '6', 'other']; if (relationship_types contains\
+    \ relationship_type) { relationship_sex != null } else { return true }"
   description: "Indicate sex of family member specified in the the 'relationship_type'\
     \ field. If no family history of cancer, then -888 (not applicable) can be used\
     \ in this field."

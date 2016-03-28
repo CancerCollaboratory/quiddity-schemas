@@ -117,7 +117,14 @@ properties:
     - "string"
     - "null"
   tumour_stage:
-    description: "Pathological tumour stage value using indicated staging system"
+    description: "This is the pathological tumour stage classification made after\
+      \ the tumour has been surgically removed, and is based on the pathological results\
+      \ of the tumour and other tissues removed during surgery or biopsy. This information\
+      \ is not expected to be the same as 'donor_tumour_stage_at_diagnosis' since\
+      \ the pathological tumour staging information is the combination of the clinical\
+      \ staging information and additional information obtained during surgery. For\
+      \ this field, please indicate pathological tumour stage value using indicated\
+      \ staging system"
     type:
     - "string"
     - "null"
@@ -166,9 +173,9 @@ scripts:
 - value: "if (specimen_id ~= '(S|s)(P|p).*') { return false } return true"
   description: "specimen_id cannot begin with 'SP*'. This prefix is reserved for ICGC\
     \ IDs"
-- value: "if (specimen_type == '108' || specimen_type == 'Normal - other' || specimen_type\
-    \ == '113' || specimen_type == 'Primary tumour - other' || specimen_type == '117'\
-    \ || specimen_type == 'Recurrent tumour - other') { (specimen_type_other != null)\
+- value: "other_specimen_types = ['108', 'Normal - other', '113', 'Primary tumour\
+    \ - other', '117', 'Recurrent tumour - other', '127', 'Metastatic tumour - other'];\
+    \ if (other_specimen_types contains specimen_type) { (specimen_type_other != null)\
     \ } else { return true; }"
   description: "If specimen_type is specified as either Normal - other, Primary tumour\
     \ - other or Recurrent tumour - other, specimen_type_other needs to be filled\

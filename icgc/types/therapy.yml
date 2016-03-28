@@ -83,23 +83,39 @@ scripts:
 - value: "if (donor_id ~= '(D|d)(O|o).*') { return false } return true"
   description: "donor_id cannot begin with 'DO*'. This prefix is reserved for ICGC\
     \ IDs"
-- value: "if (first_therapy_type ~= '2|3|4|5|6|7|9|10|11') { first_therapy_response\
-    \ != null } else { return true }"
+- value: "therapy_types = ['2', 'chemotherapy', '3', 'radiation therapy', '4', 'combined\
+    \ chemo+radiation therapy', '5', 'immunotherapy', '6', 'combined chemo+immunotherapy',\
+    \ '7', 'surgery', '9', 'bone marrow transplant', '10', 'stem cell transplant',\
+    \ '11', 'monoclonal antibodies (for liquid tumours)']; if (therapy_types contains\
+    \ first_therapy_type) { first_therapy_response != null } else { return true }"
   description: "Use this field to describe the clinical effect of the type of therapy\
     \ described in 'first_therapy_type'"
-- value: "if (first_therapy_type ~= '2|3|4|5|6|7') { first_therapy_therapeutic_intent\
-    \ != 1 } else { return true }"
+- value: "therapy_types = ['2', 'chemotherapy', '3', 'radiation therapy', '4', 'combined\
+    \ chemo+radiation therapy', '5', 'immunotherapy', '6', 'combined chemo+immunotherapy',\
+    \ '7', 'surgery', '9', 'bone marrow transplant', '10', 'stem cell transplant',\
+    \ '11', 'monoclonal antibodies (for liquid tumours)']; if (therapy_types contains\
+    \ first_therapy_type) { first_therapy_therapeutic_intent != '1' && first_therapy_therapeutic_intent\
+    \ != 'not applicable' } else { return true }"
   description: "Use this field to describe the therapeutic intent of the type of therapy\
     \ described in 'first_therapy_type'"
-- value: "if (second_therapy_type ~= '2|3|4|5|6|7|9|10|11') { second_therapy_response\
-    \ != null } else { return true }"
+- value: "therapy_types = ['2', 'chemotherapy', '3', 'radiation therapy', '4', 'combined\
+    \ chemo+radiation therapy', '5', 'immunotherapy', '6', 'combined chemo+immunotherapy',\
+    \ '7', 'surgery', '9', 'bone marrow transplant', '10', 'stem cell transplant',\
+    \ '11', 'monoclonal antibodies (for liquid tumours)']; if (therapy_types contains\
+    \ second_therapy_type) { second_therapy_response != null } else { return true\
+    \ }"
   description: "Use this field to describe the clinical effect of the type of therapy\
     \ described in 'second_therapy_type'"
-- value: "if (second_therapy_type ~= '2|3|4|5|6|7|9|10|11') { second_therapy_therapeutic_intent\
-    \ != 1 } else { return true }"
+- value: "therapy_types = ['2', 'chemotherapy', '3', 'radiation therapy', '4', 'combined\
+    \ chemo+radiation therapy', '5', 'immunotherapy', '6', 'combined chemo+immunotherapy',\
+    \ '7', 'surgery', '9', 'bone marrow transplant', '10', 'stem cell transplant',\
+    \ '11', 'monoclonal antibodies (for liquid tumours)']; if (therapy_types contains\
+    \ second_therapy_type) { second_therapy_therapeutic_intent != '1' && second_therapy_therapeutic_intent\
+    \ != 'not applicable' } else { return true }"
   description: "Use this field to describe the therapeutic intent of the type of therapy\
     \ described in 'second_therapy_type'"
-- value: "if (first_therapy_type == 8 || second_therapy_type == 8) { other_therapy\
+- value: "if (first_therapy_type == '8' || first_therapy_type == 'other therapy' ||\
+    \ second_therapy_type == '8' || second_therapy_type == 'other therapy') { other_therapy\
     \ != null } else { return true }"
   description: "Use this field to describe other therapies if either 'first_therapy_type'\
     \ or 'second_therapy_type' are specified as 'other therapy'"

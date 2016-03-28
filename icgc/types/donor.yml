@@ -69,8 +69,10 @@ properties:
     - "string"
     - "null"
   donor_tumour_stage_at_diagnosis:
-    description: "Stage at diagnosis using indicated staging system. Note that this\
-      \ is supplementary to specimen's pathological staging. "
+    description: "This is the clinical tumour stage classification made at the time\
+      \ of primary diagnosis, typically before any treatment. Please indicate stage\
+      \ at diagnosis using indicated staging system. Note that this is supplementary\
+      \ to specimen's pathological staging."
     type:
     - "string"
     - "null"
@@ -136,11 +138,13 @@ scripts:
   description: "The donor's age at enrollment must be expressed in years. If donor\
     \ is older than 90 years old, submit value of 90. The donor age at enrollment\
     \ should be greater than or equal to the donor's age at last followup"
-- value: "projectList = []; alive = (donor_vital_status == '1'); deceased = (donor_vital_status\
-    \ == '2'); progression = (disease_status_last_followup == '3'); relapse = (disease_status_last_followup\
-    \ == '4'); if (!(projectList contains project)) { if (progression || relapse )\
-    \ { if (donor_relapse_interval == null || donor_interval_of_last_followup == null)\
-    \ { return false } if (alive && !(donor_relapse_interval <= donor_interval_of_last_followup))\
+- value: "excludeDonorList = []; alive = (donor_vital_status == '1' || donor_vital_status\
+    \ == 'alive'); deceased = (donor_vital_status == '2' || donor_vital_status ==\
+    \ 'deceased'); progression = (disease_status_last_followup == '3' || disease_status_last_followup\
+    \ == 'progression'); relapse = (disease_status_last_followup == '4' || disease_status_last_followup\
+    \ == 'relapse'); if (!(excludeDonorList contains donor_id)) { if (progression\
+    \ || relapse ) { if (donor_relapse_interval == null || donor_interval_of_last_followup\
+    \ == null) { return false } if (alive && !(donor_relapse_interval <= donor_interval_of_last_followup))\
     \ { return false } if (deceased && !(donor_relapse_interval <= donor_survival_time))\
     \ { return false } } } return true"
   description: "If donor_vital_status is alive and disease_status_last_followup is\
@@ -149,25 +153,30 @@ scripts:
     \ is relapse or progression, the donor_relapse_interval should be less than or\
     \ equal to the donor_survival_time. Please see <a href='https://docs.icgc.org/donor-clinical-data-guidelines'>Donor\
     \ clinical data documentation </a> for more details"
-- value: "projectList=[]; alive = (donor_vital_status == '1'); deceased = (donor_vital_status\
-    \ == '2'); if (!(projectList contains project)) { if (deceased) { if (donor_survival_time\
-    \ == null) { return false } } if (alive) { if (donor_survival_time != null &&\
-    \ donor_interval_of_last_followup != null) { if (!(donor_survival_time == donor_interval_of_last_followup))\
-    \ { return false } } } return true } return true"
+- value: "excludeDonorList=[]; alive = (donor_vital_status == '1' || donor_vital_status\
+    \ == 'alive'); deceased = (donor_vital_status == '2' || donor_vital_status ==\
+    \ 'deceased'); if (!(excludeDonorList contains donor_id)) { if (deceased) { if\
+    \ (donor_survival_time == null) { return false } } if (alive) { if (donor_survival_time\
+    \ != null && donor_interval_of_last_followup != null) { if (!(donor_survival_time\
+    \ == donor_interval_of_last_followup)) { return false } } } return true } return\
+    \ true"
   description: "Donor survival time must be submitted if donor_vital_status is deceased.\
     \ If donor is alive, donor_survival_time should be equal to the donor_interval_of_last_followup.\
     \ Please see <a href='https://docs.icgc.org/donor-clinical-data-guidelines'>Donor\
     \ clinical data documentation </a> for more details"
-- value: "projectList=[]; progression = (disease_status_last_followup == '3'); relapse\
-    \ = (disease_status_last_followup == '4'); if (!(projectList contains project))\
-    \ { if ( (progression || relapse) && (donor_interval_of_last_followup == null)\
-    \ ) { return false } } return true"
+- value: "excludeDonorList=[]; progression = (disease_status_last_followup == '3'\
+    \ || disease_status_last_followup == 'progression'); relapse = (disease_status_last_followup\
+    \ == '4' || disease_status_last_followup == 'relapse'); if (!(excludeDonorList\
+    \ contains donor_id)) { if ( (progression || relapse) && (donor_interval_of_last_followup\
+    \ == null) ) { return false } } return true"
   description: "If donor's disease_status_last_followup is progression or relapse,\
     \ donor_interval_of_last_followup is required. Please see <a href='https://docs.icgc.org/donor-clinical-data-guidelines'>Donor\
     \ clinical data documentation </a> for more details"
-- value: "projectList=[]; alive = (donor_vital_status == '1'); deceased = (donor_vital_status\
-    \ == '2'); progression = (disease_status_last_followup == '3'); relapse = (disease_status_last_followup\
-    \ == '4'); if (!(projectList contains project)) { if (donor_primary_treatment_interval\
+- value: "excludeDonorList=[]; alive = (donor_vital_status == '1' || donor_vital_status\
+    \ == 'alive'); deceased = (donor_vital_status == '2' || donor_vital_status ==\
+    \ 'deceased'); progression = (disease_status_last_followup == '3' || disease_status_last_followup\
+    \ == 'progression'); relapse = (disease_status_last_followup == '4' || disease_status_last_followup\
+    \ == 'relapse'); if (!(excludeDonorList contains donor_id)) { if (donor_primary_treatment_interval\
     \ != null) { if (donor_survival_time != null && !(donor_primary_treatment_interval\
     \ <= donor_survival_time)) { return false } if ( (progression || relapse) && donor_relapse_interval\
     \ != null ) { if (alive && !(donor_primary_treatment_interval + donor_relapse_interval\
