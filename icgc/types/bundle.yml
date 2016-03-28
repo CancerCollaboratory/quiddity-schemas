@@ -2,12 +2,9 @@ id: bundle
 title: Bundle
 required:
 - bundle_id
-- sample_id
 properties:
   bundle_id:
     type: string
-  sample_id:
-    type: string    
   reference_genome:
     type: object
     properties:
@@ -21,11 +18,3 @@ properties:
           type: string
 primaryKey:
 - bundle_id
-
-parents:
-- type: sample
-  name: sample
-  parentKey:
-  - analyzed_sample_id
-  property:
-  - sample_id
