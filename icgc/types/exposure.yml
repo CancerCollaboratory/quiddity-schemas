@@ -67,7 +67,7 @@ scripts:
     \ || alcohol_history == 'yes') { alcohol_history_intensities contains alcohol_history_intensity\
     \ } else if (alcohol_history == '2' || alcohol_history == 'no') { alcohol_history_intensity\
     \ == '1' || alcohol_history_intensity == 'None'} else if (alcohol_history == '3'\
-    \ || alcohol_history == 'Don\'t know/Not sure') { alcohol_history_intensity ==\
+    \ || alcohol_history == 'Don\\'t know/Not sure') { alcohol_history_intensity ==\
     \ '6' || alcohol_history_intensity == 'Not Documented' } else { return false }"
   description: "This field is required if alcohol_history was specified as '1' (yes).\
     \ If patient has no alcohol history (non-drinker), indicate value '1' (none) for\
